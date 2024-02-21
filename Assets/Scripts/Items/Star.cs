@@ -6,6 +6,7 @@ using Unity.UI;
 
 public class Star : GeneralItem
 {
+    new string name = "Star";
 
     public override void UseFromInventory([Optional] int quantity)
     {

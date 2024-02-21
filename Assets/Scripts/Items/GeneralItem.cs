@@ -9,9 +9,6 @@ public class GeneralItem : MonoBehaviour
     //[Header("Set the UI sprite for this object")]
     //public Sprite UiImage;
 
-    [Header("Name of this object")]
-    public new string name;
-
     public int quantity = 1;
 
     public void Start()

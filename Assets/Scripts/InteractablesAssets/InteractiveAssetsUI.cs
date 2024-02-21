@@ -1,32 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 
 public class InteractiveAssetsUI : MonoBehaviour
 {
-    //private InteractablesAssets assetToDisplay;
-
-    //private UnityEngine.UI.Image imageToDisplay;
-    //private UnityEngine.UI.Image SmallImagePanel;
+    //! the main object than inherit from InteractiveAssets
     private GameObject ObjectToDisplay;
-    //private List<GeneralItem> itemsToDisplay;
-
-    //private List<GameObject> placeHolders;
-
-    // List<GameObject> placeHolders = new List<GameObject>();
-    private List<GameObject> placeHolders;
-    private List<Button> buttons;
-
-    //static System.Random rnd = new System.Random();
-
-    public Sprite defaultSprite;
-
+    //! The object that will appear on it
     private GeneralItem[] items;
-
-    //private Dictionary<int, GeneralItem> correspondingItem;
+    //! The location where the objects will appear on ObjectToDisplay
+    private List<GameObject> placeHolders;
+    //! Each place holder has a button
+    private List<Button> buttons;
+    public Sprite defaultSprite;
 
     private static InteractiveAssetsUI instance;
 
@@ -48,11 +34,6 @@ public class InteractiveAssetsUI : MonoBehaviour
 
         }
 
-        //correspondingItem = new Dictionary<int, GeneralItem>();
-
-
-        //Debug.Log("Buttons.Count = " + buttons.Count);
-
     }
 
 
@@ -73,63 +54,10 @@ public class InteractiveAssetsUI : MonoBehaviour
 
     private void DisplayItems(GeneralItem[] itemsToDisplay)
     {
-
-        // // Créer une liste de numéros entre 0 et placeHolders.Count
-        // List<int> numbers = Enumerable.Range(0, placeHolders.Count).ToList();
-        // // Liste pour stocker les index générés aléatoirement
-        // List<int> rndIndex = new List<int>();
-
-        // for (int i = 0; i < placeHolders.Count; i++)
-        // {
-        //     if (numbers.Count > 0)
-        //     {
-        //         // Générer un index aléatoire
-        //         int randomIndex = rnd.Next(numbers.Count);
-
-        //         // Enregistrer l'index généré aléatoirement
-        //         rndIndex.Add(numbers[randomIndex]);
-
-        //         // Retirer cet index de la liste pour éviter les duplications
-        //         numbers.RemoveAt(randomIndex);
-        //     }
-        // }
-
-        // int[] index = new int[placeHolders.Count];
-
-        // //Debug.Log("placeHolders.Count = " + placeHolders.Count);
-
-        // for (int i = 0; i < itemsToDisplay.Length; i++)
-        // {
-        //     //Debug.Log("indices[i] = " + rndIndex[i]);
-        //     if (itemsToDisplay[i] == null) { break; }
-
-        //     placeHolders[i].SetActive(true);
-        //     placeHolders[i].GetComponent<UnityEngine.UI.Image>().sprite = itemsToDisplay[i].GetComponent<SpriteRenderer>().sprite;
-
-        //     index[i] = -1;
-
-        //Debug.Log("rndIndex[i] = " + rndIndex[i]);
-        //Debug.Log("itemToDisplay[i] = " + itemsToDisplay[i]);
-
-        //! Keep track of what item is where
-        //correspondingItem.Add(rndIndex[i], itemsToDisplay[i]);
-
-        //items[i] = itemToDisplay[i];
-        // }
-
-        // foreach (var number in index)
-        // {
-        //     Debug.Log("index = " + number);
-        // }
-
-        //! Set inactive the empty placeholders
-        // for (int i = 0; i < placeHolders.Count; i++)
-        // {
-        //     if (index[i] != -1) { placeHolders[i].SetActive(false); }
-        // }
-
         int index = 0;
 
+        //! Replace the placeholder default sprite with the item at this location
+        //! If no item to display, set the placeholder inactif
         foreach (var placeHolder in placeHolders)
         {
             if (index < itemsToDisplay.Length && itemsToDisplay[index] != null)
@@ -153,52 +81,40 @@ public class InteractiveAssetsUI : MonoBehaviour
         {
             if (placeHolders[i].activeSelf)
             {
-                int index = i; // Capture the current index in a local variable
-                buttons[i].onClick.AddListener(() => ButtonClickAction(buttons[index], index));
+                buttons[i].onClick.AddListener(() => ButtonClickAction(i));
             }
         }
 
     }
 
-    // Méthode à exécuter lorsque le bouton est cliqué
-    private void ButtonClickAction(Button button, int index)
+    private void ButtonClickAction(int index)
     {
-        // Debug.Log("Button clicked: " + button.name);
-        // Debug.Log("Button clicked index : " + index);
-        // Debug.Log("Item here : " + correspondingItem[index].name);
-
         InfoJournalUI.GetInstance().SetInfoToDisplay(items[index]);
     }
 
-    // Méthode pour retirer les écouteurs d'événements onClick de chaque bouton
+
     public void RemoveButtonClickListeners()
     {
         foreach (Button button in buttons)
         {
-            // Retirer tous les écouteurs d'événements onClick associés à ce bouton
             button.onClick.RemoveAllListeners();
         }
     }
 
+    //! Call when investigating a Interactive Object
     public void SetMeActive(Sprite sprite, GeneralItem[] itemsToDisplay)
     {
-        //Debug.Log(sprite);
-        //Debug.Log(itemsToDisplay);
 
         gameObject.SetActive(true);
-        //ObjectToDisplay.SetActive(true);
         ObjectToDisplay.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
-        //items = assetToDisplay.itemsToDisplay;
         DisplayItems(itemsToDisplay);
         LinkTheButtons();
 
     }
 
+    //! Call not investigating a Interactive Object anymore
     public void SetMeInactive()
     {
-        //! Empty the dictionnary
-        // correspondingItem.Clear();
-
         ObjectToDisplay.GetComponent<UnityEngine.UI.Image>().sprite = defaultSprite;
 
         foreach (Transform child in ObjectToDisplay.transform)
@@ -207,9 +123,6 @@ public class InteractiveAssetsUI : MonoBehaviour
         }
         RemoveButtonClickListeners();
         gameObject.SetActive(false);
-
-
-
     }
 
 

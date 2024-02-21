@@ -7,6 +7,7 @@ TagManager:
   - ExitPortal
   - doNotDestroy
   - EntrancePortal
+  - Zones
   layers:
   - Default
   - TransparentFX

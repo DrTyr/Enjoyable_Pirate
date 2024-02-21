@@ -144,6 +144,8 @@ MonoBehaviour:
   detectionLayer:
     serializedVersion: 2
     m_Bits: 4294967295
+  playerInRange: 0
+  currentZone: 
 --- !u!50 &9131804530020371532
 Rigidbody2D:
   serializedVersion: 4

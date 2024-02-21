@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Carrot : GeneralItem
 {
+    new string name = "Carrot";
 
     public override void UseFromInventory([Optional] int quantity)
     {

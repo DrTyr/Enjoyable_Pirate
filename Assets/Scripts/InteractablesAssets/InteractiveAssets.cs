@@ -7,9 +7,8 @@ public class InteractiveAssets : MonoBehaviour
 {
     [HideInInspector] public static PlayerController player;
     public GeneralItem[] itemsToDisplay;
-    public float detectionRadius = 5f; // Adjust as needed
+    public float detectionRadius = 5f; // radius around this object to detect friends
     public LayerMask detectionLayer; // Specify the layer(s) to detect
-    //public float detectionTimer = 10f;
     private InteractiveAssetsUI interactiveAssetsUI;
     private List<GameObject> detectedObjects = new List<GameObject>();
     private List<GameObject> itemToDisplayPanelUI;
@@ -17,16 +16,15 @@ public class InteractiveAssets : MonoBehaviour
     [HideInInspector] public bool playerInRange;
     private bool interactiveAssetsUIInDisplay;
 
+    [HideInInspector] public string currentZone;
 
-    //private string friendName;
+    public Coroutine detectCoroutine;
 
-    //private int friendQuantity;
 
     public virtual void Start()
     {
         player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
         interactiveAssetsUI = FindObjectOfType(typeof(InteractiveAssetsUI)) as InteractiveAssetsUI;
-        //interactiveAssetsUI = InteractiveAssetsUI.GetInstance();
         itemToDisplayPanelUI = new List<GameObject>();
 
         foreach (Transform panel in transform.GetChild(0).gameObject.transform)
@@ -35,31 +33,21 @@ public class InteractiveAssets : MonoBehaviour
         }
 
         playerInRange = false;
-
-        //Debug.Log(interactiveAssetsUI);
-
         DisplayItems();
-
-        // Start the coroutine to perform detection every n seconds
-        //StartCoroutine(DetectObjectsPeriodically(detectionTimer, this.friendName, this.friendQuantity));
-
     }
 
     void Update()
     {
-
         if (playerInRange && player.interact.action.WasPressedThisFrame() && interactiveAssetsUIInDisplay == false)
         {
             interactiveAssetsUI.SetMeActive(GetComponent<SpriteRenderer>().sprite, itemsToDisplay);
             interactiveAssetsUIInDisplay = true;
         }
-
-
-
     }
 
     private void DisplayItems()
     {
+        //Debug.Log(itemToDisplayPanelUI);
 
         for (int i = 0; i < itemToDisplayPanelUI.Count; i++)
         {
@@ -84,8 +72,6 @@ public class InteractiveAssets : MonoBehaviour
         {
             playerInRange = true;
         }
-
-        //Debug.Log("playerNear : " + playerNear);
     }
 
     public void OnTriggerExit2D(Collider2D other)
@@ -95,30 +81,21 @@ public class InteractiveAssets : MonoBehaviour
             playerInRange = false;
             interactiveAssetsUIInDisplay = false;
             interactiveAssetsUI.SetMeInactive();
-
         }
-
-        //playerInRange = false;
-
-
     }
 
-    public IEnumerator DetectObjectsPeriodically(float interval, List<string> friendName, List<int> friendQuantity, List<string> loadedObjectAdress)
+    public IEnumerator DetectObjectsPeriodically(FriendsCondition condition)
     {
         // Keep detecting objects every 'interval' seconds
         while (true)
         {
-            yield return new WaitForSeconds(interval);
+            yield return new WaitForSeconds(condition.DetectionTimer);
 
-            if (friendName.Count == friendQuantity.Count && friendQuantity.Count == loadedObjectAdress.Count)
-            {
-                for (int i = 0; i < friendName.Count; i++)
-                {
-                    ReactToCloseFriends(friendName[i], friendQuantity[i], loadedObjectAdress[i]);
-                }
-
-            }
-
+            ReactToCloseFriends(
+             condition.FriendName,
+             condition.FriendQuantity,
+             condition.LoadedObjectAdress,
+             condition.RequiredZone);
         }
     }
 
@@ -126,11 +103,9 @@ public class InteractiveAssets : MonoBehaviour
     {
         int quantityInRadius = 0;
 
-        //Debug.Log("In HowManyAreInRadius");
         detectedObjects.Clear(); // Clear the list before updating
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectionRadius, detectionLayer);
-        // Use Physics.OverlapSphere for 3D detection
 
         foreach (Collider2D collider in colliders)
         {
@@ -143,37 +118,83 @@ public class InteractiveAssets : MonoBehaviour
 
         foreach (var detectedObject in detectedObjects)
         {
-
             if (detectedObject.name.Contains(name)) { quantityInRadius++; }
         }
 
         return quantityInRadius;
     }
 
-    //! If friendQuantity friendName or more in detectionRadius, add an object to the list 
-    public void ReactToCloseFriends(string friendName, int friendQuantity, string loadedObjectAdress)
+    //! If friendQuantity friendName in detectionRadius and in the right zone, add an object to the list 
+    public void ReactToCloseFriends(string friendName, int friendQuantity, string loadedObjectAdress, string requiredZone)
     {
-
-        if (HowManyAreInRadius(friendName) >= friendQuantity && itemsToDisplay.Contains(null))
+        if (currentZone == requiredZone)
         {
-            //Debug.Log(friendQuantity + " " + friendName + " around");
-
-            //! Find the first null index
-            int index = System.Array.FindIndex(itemsToDisplay, item => item == null);
-
-            GeneralItem loadedObject = Resources.Load<GeneralItem>(loadedObjectAdress);
-            //GeneralItem loadedObject = Resources.Load<GeneralItem>("Items/" + "HealthCollectible");
-            if (loadedObject != null)
-            { itemsToDisplay[index] = loadedObject; }
-            else
+            //! Stop the coroutine if the item is full
+            if (itemsToDisplay.Contains(null) == false)
             {
-                Debug.LogWarning("Could not load the game object at adress " + loadedObjectAdress);
+                Debug.Log("Coroutine Stop, full");
+                StopCoroutine(detectCoroutine);
+                return;
             }
 
-            DisplayItems();
+            int friendsInRadius = HowManyAreInRadius(friendName);
 
+            if (friendsInRadius < friendQuantity)
+            {
+                Debug.Log("Coroutine Stop, no more friend");
+                StopCoroutine(detectCoroutine);
+                return;
+            }
+
+            if (friendsInRadius >= friendQuantity && itemsToDisplay.Contains(null))
+            {
+                //! Find the first null index
+                int index = Array.FindIndex(itemsToDisplay, item => item == null);
+
+                GeneralItem loadedObject = Resources.Load<GeneralItem>(loadedObjectAdress);
+                if (loadedObject != null)
+                { itemsToDisplay[index] = loadedObject; }
+                else
+                {
+                    Debug.LogWarning("Could not load the game object at adress " + loadedObjectAdress);
+                }
+                DisplayItems();
+                return;
+            }
+        }
+    }
+
+    public void RemoveThisItem(string name)
+    {
+        //Debug.Log("Inside RemoveThisItem");
+
+        for (int i = 0; i < itemsToDisplay.Length; i++)
+        {
+            if (itemsToDisplay[i] != null && itemsToDisplay[i].name.Contains(name))
+            {
+                //Debug.Log("itemsToDisplay[i].name = " + itemsToDisplay[i].name);
+                itemsToDisplay[i] = null;
+            }
         }
 
+        DisplayItems();
+    }
+
+    public void SetZone(string zoneName)
+    {
+        currentZone = zoneName;
+        Debug.Log("Current zone: " + currentZone);
+    }
+
+    public void ClearZone()
+    {
+        currentZone = null;
+        Debug.Log("No zone");
+    }
+
+    public string GetZone()
+    {
+        return currentZone;
     }
 
 }
