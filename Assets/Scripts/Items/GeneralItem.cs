@@ -10,7 +10,6 @@ public class GeneralItem : MonoBehaviour
     //[Header("Set the UI sprite for this object")]
     //public Sprite UiImage;
 
-    [HideInInspector] public List<string> descriptions = new List<string>();
     public int quantity = 1;
 
     public virtual void Awake()

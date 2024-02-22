@@ -1,39 +1,18 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using Unity.UI;
 
-public class Carrot : GeneralItem
+public class Star : Species
 {
-    new string name = "Carrot";
-
-    [HideInInspector] public bool discovered = false;
-    public string description0 = "Une carrote qui pousse sur rocher, étrange";
-    public string description1 = "Il semble qu'il faille que plusieurs rocher soient proche pour que les carottes poussent";
-
-    public override void Awake()
-    {
-
-        base.Awake();
-
-        descriptions.Clear();
-        descriptions.Add(description0);
-        descriptions.Add(description1);
-
-    }
-
-    public void LoadDescriptions()
-    {
-        if (descriptions == null)
-        {
-            descriptions.Add(description0);
-            descriptions.Add(description1);
-        }
-    }
+    new string name = "Star";
 
     public override void UseFromInventory([Optional] int quantity)
     {
         //quantity = 0 meaning the parameter was not passed, default to this.quantity
         if (quantity == 0) { quantity = this.quantity; }
-        //Inventory inventory = inventory.GetComponent<Inventory>();
+        //Inventory inventory = inventoryManager.GetComponent<Inventory>();
         //! Check if enough item in inventory to use this quantity
         if (inventory.GetQuantityOfThisItem(name) == 0)
         {
@@ -47,10 +26,13 @@ public class Carrot : GeneralItem
         }
         else
         {
-            //! TO DO ?
+            //! TO DO
             Debug.Log("Not enough " + name + " in inventory, asked/available : " + quantity + "/" + inventory.GetQuantityOfThisItem(name));
         }
     }
+
+
+
 
 
 }

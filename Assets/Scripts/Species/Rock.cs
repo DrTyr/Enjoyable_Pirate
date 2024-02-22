@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class Rock : GeneralItem
+public class Rock : Species
 {
     public GameObject RockPrefab;
 

@@ -1,18 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using Unity.UI;
 
-public class Star : GeneralItem
+public class Carrot : Species
 {
-    new string name = "Star";
+    new string name = "Carrot";
+
+    [HideInInspector] public bool discovered = false;
+
+
+    public override void Awake()
+    {
+
+        base.Awake();
+
+        //descriptions.Clear();
+
+        speciesDescription = SpeciesDescriptions.GenerateCarrots();
+
+        //descriptions = speciesDescription.descriptionsText;
+
+    }
 
     public override void UseFromInventory([Optional] int quantity)
     {
         //quantity = 0 meaning the parameter was not passed, default to this.quantity
         if (quantity == 0) { quantity = this.quantity; }
-        //Inventory inventory = inventoryManager.GetComponent<Inventory>();
+        //Inventory inventory = inventory.GetComponent<Inventory>();
         //! Check if enough item in inventory to use this quantity
         if (inventory.GetQuantityOfThisItem(name) == 0)
         {
@@ -26,13 +39,16 @@ public class Star : GeneralItem
         }
         else
         {
-            //! TO DO
+            //! TO DO ?
             Debug.Log("Not enough " + name + " in inventory, asked/available : " + quantity + "/" + inventory.GetQuantityOfThisItem(name));
         }
     }
 
+    private void GenerateDescription()
+    {
 
 
 
+    }
 
 }

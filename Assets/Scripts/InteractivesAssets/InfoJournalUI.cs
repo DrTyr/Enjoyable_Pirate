@@ -18,6 +18,8 @@ public class InfoJournalUI : MonoBehaviour
     public Slider[] sliders;
     public TextMeshProUGUI[] descriptionUI;
 
+    private SpeciesDescriptions speciesDescription;
+
     public float sliderFillDuration = 2f;
 
     void Start()
@@ -86,21 +88,16 @@ public class InfoJournalUI : MonoBehaviour
 
     public void DisplayStudy(int index)
     {
+        speciesDescription = CurrentObjectDisplay.GetComponent<Species>().speciesDescription;
         Slider slider = sliders[index];
         slider.gameObject.SetActive(true);
         //! Must Awake the object the first time, otherwise the descriptions are null because the object was never awaked !!
-        CurrentObjectDisplay.GetComponent<GeneralItem>().Awake();
+        CurrentObjectDisplay.GetComponent<Species>().Awake();
         descriptionUI[index].text = "";
-        string text = CurrentObjectDisplay.GetComponent<GeneralItem>().descriptions[index];
-        StartCoroutine(SliderFiller.FillSlider(slider, sliderFillDuration, descriptionUI[index], text));
+        StartCoroutine(SliderFiller.FillSlider(slider, sliderFillDuration, descriptionUI[index], speciesDescription.descriptionsText[index]));
 
     }
 
-    public void DisplayDescriptionText(string description)
-    {
-
-
-    }
 
 
 }
