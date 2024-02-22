@@ -14,7 +14,19 @@ public class InteractiveAssetsUI : MonoBehaviour
     private List<Button> buttons;
     public Sprite defaultSprite;
 
+    private bool doesButtonDisplayJournal;
+
     private static InteractiveAssetsUI instance;
+
+
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("Found more than one Interactive Asset UI in the scene");
+        }
+        instance = this;
+    }
 
     void Start()
     {
@@ -33,17 +45,6 @@ public class InteractiveAssetsUI : MonoBehaviour
             buttons.Add(child.gameObject.GetComponentInChildren<Button>());
 
         }
-
-    }
-
-
-    void Awake()
-    {
-        if (instance != null)
-        {
-            Debug.LogWarning("Found more than one Interactive Asset UI in the scene");
-        }
-        instance = this;
     }
 
 
@@ -77,11 +78,13 @@ public class InteractiveAssetsUI : MonoBehaviour
 
     private void LinkTheButtons()
     {
-        for (int i = 0; i < buttons.Count; i++)
+        for (int i = 0; i < items.Length; i++)
         {
-            if (placeHolders[i].activeSelf)
+            //Debug.Log("items.Length : " + items.Length);
+            int localIndex = i;
+            if (placeHolders[localIndex].activeSelf)
             {
-                buttons[i].onClick.AddListener(() => ButtonClickAction(i));
+                buttons[localIndex].onClick.AddListener(() => ButtonClickAction(localIndex));
             }
         }
 
@@ -89,9 +92,17 @@ public class InteractiveAssetsUI : MonoBehaviour
 
     private void ButtonClickAction(int index)
     {
-        InfoJournalUI.GetInstance().SetInfoToDisplay(items[index]);
+        if (doesButtonDisplayJournal)
+        {
+            InfoJournalUI.GetInstance().SetInfoToDisplay(items[index]);
+            doesButtonDisplayJournal = false;
+        }
+        else
+        {
+            InfoJournalUI.GetInstance().Close();
+            doesButtonDisplayJournal = true;
+        }
     }
-
 
     public void RemoveButtonClickListeners()
     {
@@ -104,7 +115,7 @@ public class InteractiveAssetsUI : MonoBehaviour
     //! Call when investigating a Interactive Object
     public void SetMeActive(Sprite sprite, GeneralItem[] itemsToDisplay)
     {
-
+        items = itemsToDisplay;
         gameObject.SetActive(true);
         ObjectToDisplay.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
         DisplayItems(itemsToDisplay);
@@ -123,6 +134,8 @@ public class InteractiveAssetsUI : MonoBehaviour
         }
         RemoveButtonClickListeners();
         gameObject.SetActive(false);
+        InfoJournalUI.GetInstance().Close();
+
     }
 
 

@@ -1,40 +1,23 @@
 using System.Collections.Generic;
+using UnityEngine;
+
 
 public class InteractiveBeachRocks : InteractiveAssets
 {
-    public List<FriendsCondition> ConditionsList { get; private set; }
 
     public override void Start()
     {
         //! Call the Start Method in the parent
+        base.Start();
 
         SetAllInteractionWithInteractiveAssets();
+
+        removeCoroutine = new Coroutine[ConditionsList.Count];
+        removeCoroutineIsOn = new bool[ConditionsList.Count];
+        detectCoroutine = new Coroutine[ConditionsList.Count];
+        detectCoroutineIsOn = new bool[ConditionsList.Count];
+
     }
-
-    public void Update()
-    {
-        //Debug.Log("currentZone = " + currentZone);
-
-        foreach (FriendsCondition condition in ConditionsList)
-        {
-            //! Activate the coroutine to generate the type of objects for this zone is all the conditions are fullfilled
-            if (condition.CoRoutineInProgress == false)
-            {
-                condition.CoRoutineInProgress = true;
-                detectCoroutine = StartCoroutine(DetectObjectsPeriodically(condition));
-            }
-
-            if (condition.RequiredZone != currentZone && condition.CoRoutineInProgress == true)
-            {
-                condition.CoRoutineInProgress = false;
-                //! if the zone has changed, stop the coroutines started in the previous zone
-                StopCoroutine(detectCoroutine);
-                //! Remove all of this item on the object
-                RemoveThisItem(condition.ItemRewardName);
-            }
-        }
-    }
-
 
     private void SetAllInteractionWithInteractiveAssets()
     {
@@ -77,7 +60,6 @@ public class FriendsCondition
     public float DetectionTimer; //! Time to detecte sourrounding friend, in seconds IRL (ex : 60f = every 60 secondes)
     //public bool RightZone;
     public string ItemRewardName;
-
     public bool CoRoutineInProgress;
     public FriendsCondition(string name)
     {

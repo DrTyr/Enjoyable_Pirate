@@ -5,6 +5,30 @@ public class Carrot : GeneralItem
 {
     new string name = "Carrot";
 
+    [HideInInspector] public bool discovered = false;
+    public string description0 = "Une carrote qui pousse sur rocher, étrange";
+    public string description1 = "Il semble qu'il faille que plusieurs rocher soient proche pour que les carottes poussent";
+
+    public override void Awake()
+    {
+
+        base.Awake();
+
+        descriptions.Clear();
+        descriptions.Add(description0);
+        descriptions.Add(description1);
+
+    }
+
+    public void LoadDescriptions()
+    {
+        if (descriptions == null)
+        {
+            descriptions.Add(description0);
+            descriptions.Add(description1);
+        }
+    }
+
     public override void UseFromInventory([Optional] int quantity)
     {
         //quantity = 0 meaning the parameter was not passed, default to this.quantity
@@ -27,4 +51,6 @@ public class Carrot : GeneralItem
             Debug.Log("Not enough " + name + " in inventory, asked/available : " + quantity + "/" + inventory.GetQuantityOfThisItem(name));
         }
     }
+
+
 }

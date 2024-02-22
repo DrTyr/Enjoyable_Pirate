@@ -65,7 +65,6 @@ public class DialogueManager : MonoBehaviour
     {
         player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
 
-
         //! Desactivate the dialogue Panel and so dialogueIsPlaying to false, no dialogue playing at start
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
@@ -81,7 +80,6 @@ public class DialogueManager : MonoBehaviour
             choicesText[index] = choices.GetComponentInChildren<TextMeshProUGUI>();
             index++;
         }
-
 
     }
 

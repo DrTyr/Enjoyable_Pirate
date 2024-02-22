@@ -12,13 +12,18 @@ public class InteractiveAssets : MonoBehaviour
     private InteractiveAssetsUI interactiveAssetsUI;
     private List<GameObject> detectedObjects = new List<GameObject>();
     private List<GameObject> itemToDisplayPanelUI;
-
     [HideInInspector] public bool playerInRange;
     private bool interactiveAssetsUIInDisplay;
-
     [HideInInspector] public string currentZone;
+    [HideInInspector] public Coroutine[] detectCoroutine;
+    [HideInInspector] public Coroutine[] removeCoroutine;
+    [HideInInspector] public bool[] removeCoroutineIsOn;
+    [HideInInspector] public bool[] detectCoroutineIsOn;
 
-    public Coroutine detectCoroutine;
+
+
+    public List<FriendsCondition> ConditionsList { get; set; }
+
 
 
     public virtual void Start()
@@ -43,12 +48,30 @@ public class InteractiveAssets : MonoBehaviour
             interactiveAssetsUI.SetMeActive(GetComponent<SpriteRenderer>().sprite, itemsToDisplay);
             interactiveAssetsUIInDisplay = true;
         }
+
+        int index = 0;
+
+        foreach (FriendsCondition condition in ConditionsList)
+        {
+
+            //! Activate the coroutine to generate the type of objects for this zone is all the conditions are fullfilled
+            //! And if a item can be add
+            if (detectCoroutineIsOn[index] == false)
+            {
+
+                condition.CoRoutineInProgress = true;
+                detectCoroutineIsOn[index] = true;
+
+                detectCoroutine[index] = StartCoroutine(DetectObjectsPeriodically(condition, index));
+            }
+
+            index++;
+
+        }
     }
 
     private void DisplayItems()
     {
-        //Debug.Log(itemToDisplayPanelUI);
-
         for (int i = 0; i < itemToDisplayPanelUI.Count; i++)
         {
             itemToDisplayPanelUI[i].SetActive(true);
@@ -84,18 +107,33 @@ public class InteractiveAssets : MonoBehaviour
         }
     }
 
-    public IEnumerator DetectObjectsPeriodically(FriendsCondition condition)
+    public IEnumerator DetectObjectsPeriodically(FriendsCondition condition, int index)
     {
         // Keep detecting objects every 'interval' seconds
         while (true)
         {
             yield return new WaitForSeconds(condition.DetectionTimer);
 
-            ReactToCloseFriends(
-             condition.FriendName,
-             condition.FriendQuantity,
-             condition.LoadedObjectAdress,
-             condition.RequiredZone);
+            ReactToCloseFriends(condition, index);
+        }
+    }
+
+    public IEnumerator RemoveObjectsPeriodically(string name)
+    {
+        int index = 0;
+        // Keep detecting objects every 'interval' seconds
+        while (true)
+        {
+            yield return new WaitForSeconds(5f);
+
+            if (itemsToDisplay[index] != null && itemsToDisplay[index].name.Contains(name))
+            {
+                //Debug.Log("itemsToDisplay[i].name = " + itemsToDisplay[i].name);
+                itemsToDisplay[index] = null;
+            }
+            DisplayItems();
+            if (index < itemsToDisplay.Length) { index++; }
+            Debug.Log("RemoveObjectsPeriodically index : " + index);
         }
     }
 
@@ -125,60 +163,81 @@ public class InteractiveAssets : MonoBehaviour
     }
 
     //! If friendQuantity friendName in detectionRadius and in the right zone, add an object to the list 
-    public void ReactToCloseFriends(string friendName, int friendQuantity, string loadedObjectAdress, string requiredZone)
+    public void ReactToCloseFriends(FriendsCondition condition, int index)
     {
-        if (currentZone == requiredZone)
+        List<string> names = new List<string>();
+
+        foreach (GeneralItem item in itemsToDisplay)
         {
-            //! Stop the coroutine if the item is full
-            if (itemsToDisplay.Contains(null) == false)
-            {
-                Debug.Log("Coroutine Stop, full");
-                StopCoroutine(detectCoroutine);
-                return;
-            }
-
-            int friendsInRadius = HowManyAreInRadius(friendName);
-
-            if (friendsInRadius < friendQuantity)
-            {
-                Debug.Log("Coroutine Stop, no more friend");
-                StopCoroutine(detectCoroutine);
-                return;
-            }
-
-            if (friendsInRadius >= friendQuantity && itemsToDisplay.Contains(null))
-            {
-                //! Find the first null index
-                int index = Array.FindIndex(itemsToDisplay, item => item == null);
-
-                GeneralItem loadedObject = Resources.Load<GeneralItem>(loadedObjectAdress);
-                if (loadedObject != null)
-                { itemsToDisplay[index] = loadedObject; }
-                else
-                {
-                    Debug.LogWarning("Could not load the game object at adress " + loadedObjectAdress);
-                }
-                DisplayItems();
-                return;
-            }
-        }
-    }
-
-    public void RemoveThisItem(string name)
-    {
-        //Debug.Log("Inside RemoveThisItem");
-
-        for (int i = 0; i < itemsToDisplay.Length; i++)
-        {
-            if (itemsToDisplay[i] != null && itemsToDisplay[i].name.Contains(name))
-            {
-                //Debug.Log("itemsToDisplay[i].name = " + itemsToDisplay[i].name);
-                itemsToDisplay[i] = null;
-            }
+            if (item == null) { continue; }
+            names.Add(item.name);
         }
 
-        DisplayItems();
+        //! if the zone has changed, stop the coroutines started in the previous zone
+        if (currentZone != condition.RequiredZone)
+        {
+            StopCoroutine(detectCoroutine[index]);
+            detectCoroutineIsOn[index] = false;
+            condition.CoRoutineInProgress = false;
+        }
+
+        //! if item from another zone are on the object but can't stay here in the new zone
+        if (currentZone != condition.RequiredZone && names.Contains(condition.ItemRewardName) && removeCoroutineIsOn[index] == false)
+        {
+            removeCoroutine[index] = StartCoroutine(RemoveObjectsPeriodically(condition.ItemRewardName));
+            removeCoroutineIsOn[index] = true;
+            return;
+        }
+
+        //! All the item has been removed, must stop the coroutine
+        if (names.Contains(condition.ItemRewardName) == false && removeCoroutineIsOn[index] == true)
+        {
+            StopCoroutine(removeCoroutine[index]);
+            removeCoroutineIsOn[index] = false;
+        }
+
+        //! Stop the coroutine if the item[] is full
+        if (itemsToDisplay.Contains(null) == false)
+        {
+            Debug.Log("Coroutine Stop, full " + name);
+            StopCoroutine(detectCoroutine[index]);
+            detectCoroutineIsOn[index] = false;
+            condition.CoRoutineInProgress = false;
+            return;
+        }
+
+        int friendsInRadius = 0;
+        friendsInRadius = HowManyAreInRadius(condition.FriendName);
+
+        if (friendsInRadius < condition.FriendQuantity && condition.CoRoutineInProgress == true)
+        {
+            Debug.Log("Coroutine Stop, no more friend " + name);
+            StopCoroutine(detectCoroutine[index]);
+            detectCoroutineIsOn[index] = false;
+            condition.CoRoutineInProgress = false;
+            return;
+        }
+
+        if (currentZone == condition.RequiredZone && friendsInRadius >= condition.FriendQuantity && itemsToDisplay.Contains(null))
+        {
+            //! Find the first null index
+            int i = Array.FindIndex(itemsToDisplay, item => item == null);
+
+            GeneralItem loadedObject = Resources.Load<GeneralItem>(condition.LoadedObjectAdress);
+            if (loadedObject != null)
+            { itemsToDisplay[i] = loadedObject; }
+            else
+            {
+                Debug.LogWarning("Could not load the game object at adress " + condition.LoadedObjectAdress);
+            }
+            DisplayItems();
+            return;
+        }
+
+        // Debug.Log("tout en bas : " + this.name);
+
     }
+
 
     public void SetZone(string zoneName)
     {
@@ -190,11 +249,6 @@ public class InteractiveAssets : MonoBehaviour
     {
         currentZone = null;
         Debug.Log("No zone");
-    }
-
-    public string GetZone()
-    {
-        return currentZone;
     }
 
 }

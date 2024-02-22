@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -9,13 +10,15 @@ public class GeneralItem : MonoBehaviour
     //[Header("Set the UI sprite for this object")]
     //public Sprite UiImage;
 
+    [HideInInspector] public List<string> descriptions = new List<string>();
     public int quantity = 1;
 
-    public void Start()
+    public virtual void Awake()
     {
         player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
         inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
         if (name == "") { Debug.LogWarning("Must set a name for this object : " + this); }
+
     }
 
     public virtual void OnTriggerEnter2D(Collider2D other)
