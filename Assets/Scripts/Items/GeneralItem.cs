@@ -14,6 +14,9 @@ public class GeneralItem : MonoBehaviour
 
     public virtual void Awake()
     {
+
+        //Debug.Log("Item awake");
+
         player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
         inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
         if (name == "") { Debug.LogWarning("Must set a name for this object : " + this); }

@@ -5,49 +5,43 @@ using UnityEngine;
 public class InteractiveBeachRocks : InteractiveAssets
 {
 
+
     public override void Start()
     {
         //! Call the Start Method in the parent
         base.Start();
 
-        SetAllInteractionWithInteractiveAssets();
+        subListSpecies = new List<Species>();
+        ConditionsList = new List<FriendsCondition>();
+
+        GetItemICanGrow();
 
         removeCoroutine = new Coroutine[ConditionsList.Count];
         removeCoroutineIsOn = new bool[ConditionsList.Count];
         detectCoroutine = new Coroutine[ConditionsList.Count];
         detectCoroutineIsOn = new bool[ConditionsList.Count];
 
+
     }
 
-    private void SetAllInteractionWithInteractiveAssets()
+    public void GetItemICanGrow()
     {
-        ConditionsList = new List<FriendsCondition>();
 
-        // Create condition
-        FriendsCondition conditions1 = new("BeachRock")
+        List<Species> allSpecies = SpeciesDatabase.Instance.GetAllSpecies();
+
+        foreach (Species species in allSpecies)
         {
-            FriendQuantity = 3,
-            RequiredZone = ZonesNames.UpperBeach.ToString(),
-            LoadedObjectAdress = "Items/" + "Carrot",
-            ItemRewardName = "Carrot",
-            DetectionTimer = 10f
-        };
+            foreach (FriendsCondition condition in Species.conditionsList)
+            {
+                if (condition.SupportName == "BeachRock")
+                {
+                    subListSpecies.Add(species);
+                    ConditionsList.Add(condition);
+                }
+            }
 
-        // Add condition to the list
-        ConditionsList.Add(conditions1);
-
-        FriendsCondition conditions2 = new("BeachRock")
-        {
-            FriendQuantity = 2,
-            RequiredZone = ZonesNames.LowerBeach.ToString(),
-            LoadedObjectAdress = "Items/" + "Star",
-            ItemRewardName = "Star",
-            DetectionTimer = 10f
-        };
-
-        // Add condition to the list
-        ConditionsList.Add(conditions2);
-
+        }
     }
+
 }
 

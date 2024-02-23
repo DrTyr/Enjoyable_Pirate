@@ -1,24 +1,52 @@
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Carrot : Species
 {
-    new string name = "Carrot";
+    new string name = "Carrots";
 
-    [HideInInspector] public bool discovered = false;
+    private static bool Awoken = false;
+
+    [HideInInspector] public static int unlockedLevel = 0;
+
+    [HideInInspector] public int maxUnlockedLevel = 1; // 0, 1 and 2 ; Currently set to 1 because only 2 display in JournalUI;
 
 
     public override void Awake()
     {
+        if (!Awoken)
+        {
+            base.Awake();
 
-        base.Awake();
+            Debug.Log("Carrots awoken");
 
-        //descriptions.Clear();
+            speciesDescription.Add(SetDescription());
+            conditionsList.Add(SetConditions());
 
-        speciesDescription = SpeciesDescriptions.GenerateCarrots();
+            Debug.Log("IN carrot = " + speciesDescription.Count);
 
-        //descriptions = speciesDescription.descriptionsText;
 
+            SpeciesDatabase.Instance.AddSpecies(this);
+
+
+            Awoken = true;
+        }
+
+    }
+
+    public override int GetUnlockLevel()
+    {
+        return unlockedLevel;
+    }
+
+
+    public override void IncrementeUnlockedLevel()
+    {
+        if (unlockedLevel < maxUnlockedLevel)
+        {
+            unlockedLevel++;
+        }
     }
 
     public override void UseFromInventory([Optional] int quantity)
@@ -44,11 +72,40 @@ public class Carrot : Species
         }
     }
 
-    private void GenerateDescription()
+    public SpeciesDescriptions SetDescription()
     {
 
+        SpeciesDescriptions carrots = new SpeciesDescriptions("Carrot")
+        {
+            ScientificName = "Carotus carotus"
+        };
+        carrots.descriptionsText.Add("Une carrote qui pousse sur un rocher, étrange");
+        carrots.descriptionsText.Add("Cette espèce à l'air adapté à la vie très proche de l'océan");
+        carrots.descriptionsText.Add("Il semble qu'il faille que plusieurs rocher soient proche pour que les carottes poussent");
 
+        return carrots;
+    }
+
+
+    public FriendsCondition SetConditions()
+    {
+
+        FriendsCondition condition = new("BeachRock")
+        {
+            FriendQuantity = 3,
+            RequiredZone = ZonesNames.UpperBeach.ToString(),
+            LoadedObjectAdress = "Species/" + "Carrot",
+            ItemRewardName = "Carrot",
+            DetectionTimer = 10f,
+            SupportName = "BeachRock"
+        };
+
+        //conditionsList.Add(condition);
+
+        return condition;
 
     }
+
+
 
 }

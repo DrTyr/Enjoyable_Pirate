@@ -8,6 +8,8 @@ public class FriendsCondition
     //public bool RightZone;
     public string ItemRewardName;
     public bool CoRoutineInProgress;
+    public string SupportName;
+
     public FriendsCondition(string name)
     {
         //! Conditions to Add a object to itemList
@@ -20,9 +22,9 @@ public class FriendsCondition
         //! Exemple : "Items/" + "Carrot"
         LoadedObjectAdress = "";
         DetectionTimer = 600.0f; // By default, the time is too high
-                                 // RightZone = false;
         ItemRewardName = "";
         CoRoutineInProgress = false;
+        SupportName = "";
     }
 
 }

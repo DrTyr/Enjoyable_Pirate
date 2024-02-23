@@ -20,14 +20,16 @@ public class InteractiveAssets : MonoBehaviour
     [HideInInspector] public bool[] removeCoroutineIsOn;
     [HideInInspector] public bool[] detectCoroutineIsOn;
 
-
-
     public List<FriendsCondition> ConditionsList { get; set; }
 
-
+    public List<Species> subListSpecies;
 
     public virtual void Start()
     {
+
+        // Debug.Log("Parent start");
+
+
         player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
         interactiveAssetsUI = FindObjectOfType(typeof(InteractiveAssetsUI)) as InteractiveAssetsUI;
         itemToDisplayPanelUI = new List<GameObject>();
@@ -51,13 +53,21 @@ public class InteractiveAssets : MonoBehaviour
 
         int index = 0;
 
+        //Debug.Log(ConditionsList[0].SupportName);
+        //Debug.Log(ConditionsList);
+
+
+
         foreach (FriendsCondition condition in ConditionsList)
         {
-
             //! Activate the coroutine to generate the type of objects for this zone is all the conditions are fullfilled
             //! And if a item can be add
+
+            //Debug.Log(detectCoroutine);
+
             if (detectCoroutineIsOn[index] == false)
             {
+                //Debug.Log("In the update InteractiveAssets if");
 
                 condition.CoRoutineInProgress = true;
                 detectCoroutineIsOn[index] = true;
@@ -109,6 +119,8 @@ public class InteractiveAssets : MonoBehaviour
 
     public IEnumerator DetectObjectsPeriodically(FriendsCondition condition, int index)
     {
+        //Debug.Log("In DetectObjectsPeriodically");
+
         // Keep detecting objects every 'interval' seconds
         while (true)
         {
@@ -126,14 +138,15 @@ public class InteractiveAssets : MonoBehaviour
         {
             yield return new WaitForSeconds(5f);
 
-            if (itemsToDisplay[index] != null && itemsToDisplay[index].name.Contains(name))
+            if (index < itemsToDisplay.Length && itemsToDisplay[index] != null && itemsToDisplay[index].name.Contains(name))
             {
                 //Debug.Log("itemsToDisplay[i].name = " + itemsToDisplay[i].name);
                 itemsToDisplay[index] = null;
+                index++;
             }
             DisplayItems();
-            if (index < itemsToDisplay.Length) { index++; }
-            Debug.Log("RemoveObjectsPeriodically index : " + index);
+            //if (index < itemsToDisplay.Length) {  }
+            //Debug.Log("RemoveObjectsPeriodically index : " + index);
         }
     }
 
@@ -199,7 +212,7 @@ public class InteractiveAssets : MonoBehaviour
         //! Stop the coroutine if the item[] is full
         if (itemsToDisplay.Contains(null) == false)
         {
-            Debug.Log("Coroutine Stop, full " + name);
+            //Debug.Log("Coroutine Stop, full " + name);
             StopCoroutine(detectCoroutine[index]);
             detectCoroutineIsOn[index] = false;
             condition.CoRoutineInProgress = false;
@@ -211,7 +224,7 @@ public class InteractiveAssets : MonoBehaviour
 
         if (friendsInRadius < condition.FriendQuantity && condition.CoRoutineInProgress == true)
         {
-            Debug.Log("Coroutine Stop, no more friend " + name);
+            //Debug.Log("Coroutine Stop, no more friend " + name);
             StopCoroutine(detectCoroutine[index]);
             detectCoroutineIsOn[index] = false;
             condition.CoRoutineInProgress = false;
@@ -242,13 +255,13 @@ public class InteractiveAssets : MonoBehaviour
     public void SetZone(string zoneName)
     {
         currentZone = zoneName;
-        Debug.Log("Current zone: " + currentZone);
+        //Debug.Log("Current zone: " + currentZone);
     }
 
     public void ClearZone()
     {
         currentZone = null;
-        Debug.Log("No zone");
+        //Debug.Log("No zone");
     }
 
 }
