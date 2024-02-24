@@ -11,7 +11,6 @@ public class InteractiveBeachRocks : InteractiveAssets
         //! Call the Start Method in the parent
         base.Start();
 
-        subListSpecies = new List<Species>();
         ConditionsList = new List<FriendsCondition>();
 
         GetItemICanGrow();
@@ -27,20 +26,15 @@ public class InteractiveBeachRocks : InteractiveAssets
     public void GetItemICanGrow()
     {
 
-        List<Species> allSpecies = SpeciesDatabase.Instance.GetAllSpecies();
-
-        foreach (Species species in allSpecies)
+        foreach (FriendsCondition condition in Species.conditionsList)
         {
-            foreach (FriendsCondition condition in Species.conditionsList)
+            if (condition.SupportName == "BeachRock")
             {
-                if (condition.SupportName == "BeachRock")
-                {
-                    subListSpecies.Add(species);
-                    ConditionsList.Add(condition);
-                }
+                ConditionsList.Add(condition);
             }
-
         }
+
+
     }
 
 }

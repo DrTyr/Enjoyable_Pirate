@@ -5,12 +5,9 @@ using UnityEngine;
 public class Carrot : Species
 {
     new string name = "Carrots";
-
     private static bool Awoken = false;
-
     [HideInInspector] public static int unlockedLevel = 0;
-
-    [HideInInspector] public int maxUnlockedLevel = 1; // 0, 1 and 2 ; Currently set to 1 because only 2 display in JournalUI;
+    [HideInInspector] public static int maxUnlockedLevel;
 
 
     public override void Awake()
@@ -19,16 +16,10 @@ public class Carrot : Species
         {
             base.Awake();
 
-            Debug.Log("Carrots awoken");
-
             speciesDescription.Add(SetDescription());
             conditionsList.Add(SetConditions());
 
-            Debug.Log("IN carrot = " + speciesDescription.Count);
-
-
             SpeciesDatabase.Instance.AddSpecies(this);
-
 
             Awoken = true;
         }
@@ -38,6 +29,11 @@ public class Carrot : Species
     public override int GetUnlockLevel()
     {
         return unlockedLevel;
+    }
+
+    public override int GetMaxUnlockLevel()
+    {
+        return maxUnlockedLevel;
     }
 
 
@@ -83,6 +79,8 @@ public class Carrot : Species
         carrots.descriptionsText.Add("Cette espèce à l'air adapté à la vie très proche de l'océan");
         carrots.descriptionsText.Add("Il semble qu'il faille que plusieurs rocher soient proche pour que les carottes poussent");
 
+        maxUnlockedLevel = carrots.descriptionsText.Count;
+
         return carrots;
     }
 
@@ -92,15 +90,13 @@ public class Carrot : Species
 
         FriendsCondition condition = new("BeachRock")
         {
-            FriendQuantity = 3,
+            FriendQuantity = 2,
             RequiredZone = ZonesNames.UpperBeach.ToString(),
             LoadedObjectAdress = "Species/" + "Carrot",
             ItemRewardName = "Carrot",
             DetectionTimer = 10f,
             SupportName = "BeachRock"
         };
-
-        //conditionsList.Add(condition);
 
         return condition;
 

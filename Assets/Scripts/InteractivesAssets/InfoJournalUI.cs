@@ -7,26 +7,21 @@ using UnityEngine.UI;
 
 public class InfoJournalUI : MonoBehaviour
 {
-    //public Species speciesDataBase;
-    public GameObject ImagePanelDisplay;
-    public GameObject NameText;
-    public GameObject SpeciesText;
-    public GameObject DescriptionPanel;
-    //public DataBase dataBase;
+    public Button studyButton;
+    public GameObject imagePanelDisplay;
+    public GameObject nameText;
+    public GameObject speciesText;
     private static InfoJournalUI instance;
-    private GameObject CurrentObjectDisplay;
+    private GameObject itemCurrentlyDisplay;
     public Slider[] sliders;
     public TextMeshProUGUI[] descriptionUI;
-    //private SpeciesDescriptions speciesDescription;
     public float sliderFillDuration = 2f;
-
     int unlockedLevel;
-
+    int maxUnlockedLevel;
     SpeciesDescriptions description;
 
     void Start()
     {
-
         gameObject.SetActive(false);
 
         if (instance != null)
@@ -45,6 +40,7 @@ public class InfoJournalUI : MonoBehaviour
 
     public void SetInfoToDisplay(GeneralItem item)
     {
+        itemCurrentlyDisplay = item.gameObject;
 
         gameObject.SetActive(true);
 
@@ -53,115 +49,63 @@ public class InfoJournalUI : MonoBehaviour
             slider.gameObject.SetActive(false);
         }
 
-        CurrentObjectDisplay = item.gameObject;
+        Debug.Log(item.name);
 
-        //! Must Awake the object the first time, otherwise the descriptions are null because the object was never awaked !!
-        //CurrentObjectDisplay.GetComponent<Species>().Awake();
+        description = item.GetComponent<Species>().GetDescriptionBySpeciesName(item.name);
+        unlockedLevel = item.GetComponent<Species>().GetUnlockLevel();
+        maxUnlockedLevel = item.GetComponent<Species>().GetMaxUnlockLevel();
 
-        description = CurrentObjectDisplay.GetComponent<Species>().GetDescriptionBySpeciesName(CurrentObjectDisplay.name);
-
-
-        Debug.Log("CurrentObjectDisplay.name : " + CurrentObjectDisplay.name);
-        Debug.Log("description : " + description);
-
-        ImagePanelDisplay.GetComponent<UnityEngine.UI.Image>().sprite = item.GetComponent<SpriteRenderer>().sprite;
-        NameText.GetComponent<TextMeshProUGUI>().text = description.CommunName;
-        SpeciesText.GetComponent<TextMeshProUGUI>().text = description.ScientificName;
-        //DescriptionPanel.GetComponent<TextMeshProUGUI>().text = "Rien a afficher pour le moment";
-
-        unlockedLevel = CurrentObjectDisplay.GetComponent<Species>().GetUnlockLevel();
-
-        Debug.Log("unlockedLevel :" + unlockedLevel);
+        imagePanelDisplay.GetComponent<UnityEngine.UI.Image>().sprite = item.GetComponent<SpriteRenderer>().sprite;
+        nameText.GetComponent<TextMeshProUGUI>().text = description.CommunName;
+        speciesText.GetComponent<TextMeshProUGUI>().text = description.ScientificName;
 
         for (int i = 0; i < unlockedLevel; i++)
         {
-
             descriptionUI[i].text = description.descriptionsText[i];
-
         }
 
     }
 
-    public void Close()
-    {
 
-        gameObject.SetActive(false);
-
-    }
 
     public void StudyButton()
     {
 
-        if (DataBase.GetInstance().IsThisAlreadyDiscovered(CurrentObjectDisplay) == false)
+        // if (DiscoveredSpeciesDataBase.GetInstance().IsThisAlreadyDiscovered(itemCurrentlyDisplay) == false)
+        // {
+        //     DiscoveredSpeciesDataBase.GetInstance().DiscoverAnItem(itemCurrentlyDisplay);
+        // }
+
+        //! If it's the first time this species is studied, add to discoveredDataBase
+        if (unlockedLevel == 0)
         {
-            DataBase.GetInstance().DiscoverAnItem(CurrentObjectDisplay);
+            DiscoveredSpeciesDataBase.GetInstance().DiscoverAnItem(itemCurrentlyDisplay.gameObject);
+
         }
 
-        CurrentObjectDisplay.GetComponent<Species>().IncrementeUnlockedLevel();
+        itemCurrentlyDisplay.GetComponent<Species>().IncrementeUnlockedLevel();
 
         DisplayStudy();
-        //descriptionUI[0].text = CurrentObjectDisplay.GetComponent<GeneralItem>().description0;
+
+        if (unlockedLevel == maxUnlockedLevel)
+        {
+            studyButton.gameObject.SetActive(false);
+        }
+
+        unlockedLevel = itemCurrentlyDisplay.GetComponent<Species>().GetUnlockLevel();
+
+
+
     }
 
     public void DisplayStudy()
     {
-        //int index = 0;
 
-        // Debug.Log(CurrentObjectDisplay.name);
-
-        // Debug.Log(CurrentObjectDisplay.GetComponent<Species>().name);
-
-
-
-        // foreach (Species species in speciesDataBase)
-        // {
-
-        //     Debug.Log(species.name);
-
-        // }
-
-        // Debug.Log(CurrentObjectDisplay.GetComponent<Species>().childUnlockLevels.Count);
-
-        // foreach (var kvp in CurrentObjectDisplay.GetComponent<Species>().childUnlockLevels)
-        // {
-        //     Debug.Log("Child Name: " + kvp.Key + ", Unlock Level: " + kvp.Value);
-        // }
-
-        //string foundItem = items.Find(item => item.Name == searchName);
-
-
-        //SpeciesDescriptions description = CurrentObjectDisplay.GetComponent<Species>().FindDescription(CurrentObjectDisplay.name);
-
-        // Debug.Log(CurrentObjectDisplay.GetComponent<Species>().childUnlockLevels.ContainsKey(CurrentObjectDisplay.name));
-
-        //int unlockLevel = CurrentObjectDisplay.GetComponent<Species>().GetSpeciesUnlockLevels(description.CommunName);
-
-        // if (CurrentObjectDisplay.GetComponent<Species>().childUnlockLevels.ContainsKey(description.CommunName))
-        // {
-        //     // Accédez à la valeur associée à la clé "Carrots"
-        //     index = CurrentObjectDisplay.GetComponent<Species>().childUnlockLevels[CurrentObjectDisplay.name];
-        //     CurrentObjectDisplay.GetComponent<Species>().childUnlockLevels[CurrentObjectDisplay.name] += 1;
-
-        //     Debug.Log(index);
-        // }
-        //descriptionsUnlocklvl;
-
-        //CurrentObjectDisplay.GetComponent<Species>().child.descriptionsUnlocklvl = 1;
-
-        //speciesDescription = CurrentObjectDisplay.GetComponent<Species>().speciesDescription;
         Slider slider = sliders[unlockedLevel];
         slider.gameObject.SetActive(true);
         descriptionUI[unlockedLevel].text = "";
 
-        // Debug.Log(index);
-        // Debug.Log(slider);
-        // Debug.Log(sliderFillDuration);
-        // Debug.Log(descriptionUI[index]);
-        // Debug.Log(CurrentObjectDisplay.GetComponent<Species>().speciesDescription.descriptionsText[0]);
-
-        int index = CurrentObjectDisplay.GetComponent<Species>().FindIndexByCommunName(CurrentObjectDisplay.name);
-
-        //Debug.Log("Ok here");
+        int index = itemCurrentlyDisplay.GetComponent<Species>().FindIndexByCommunName(itemCurrentlyDisplay.name);
 
         StartCoroutine(SliderFiller.FillSlider(slider,
         sliderFillDuration,
@@ -171,14 +115,11 @@ public class InfoJournalUI : MonoBehaviour
 
     }
 
-    // public Species GetSpeciesInfo(string name)
-    // {
 
-    //     return SpeciesDatabase.Instance.GetSpeciesByName(name);
-
-    // }
-
-
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
 
 }
 

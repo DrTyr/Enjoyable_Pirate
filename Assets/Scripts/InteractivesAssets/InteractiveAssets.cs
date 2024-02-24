@@ -20,15 +20,13 @@ public class InteractiveAssets : MonoBehaviour
     [HideInInspector] public bool[] removeCoroutineIsOn;
     [HideInInspector] public bool[] detectCoroutineIsOn;
 
+    //! Is set in child
     public List<FriendsCondition> ConditionsList { get; set; }
 
     public List<Species> subListSpecies;
 
     public virtual void Start()
     {
-
-        // Debug.Log("Parent start");
-
 
         player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
         interactiveAssetsUI = FindObjectOfType(typeof(InteractiveAssetsUI)) as InteractiveAssetsUI;
@@ -53,33 +51,20 @@ public class InteractiveAssets : MonoBehaviour
 
         int index = 0;
 
-        //Debug.Log(ConditionsList[0].SupportName);
-        //Debug.Log(ConditionsList);
-
-
-
+        //! ConditionsList is a sublist of conditions made in each child
         foreach (FriendsCondition condition in ConditionsList)
         {
-            //! Activate the coroutine to generate the type of objects for this zone is all the conditions are fullfilled
-            //! And if a item can be add
-
-            //Debug.Log(detectCoroutine);
-
             if (detectCoroutineIsOn[index] == false)
             {
-                //Debug.Log("In the update InteractiveAssets if");
-
                 condition.CoRoutineInProgress = true;
                 detectCoroutineIsOn[index] = true;
-
                 detectCoroutine[index] = StartCoroutine(DetectObjectsPeriodically(condition, index));
             }
-
             index++;
-
         }
     }
 
+    //! Display on top of the interactive asset in the game zones
     private void DisplayItems()
     {
         for (int i = 0; i < itemToDisplayPanelUI.Count; i++)
@@ -89,7 +74,8 @@ public class InteractiveAssets : MonoBehaviour
             if (i < itemsToDisplay.Length && itemsToDisplay[i] != null)
             {
                 itemToDisplayPanelUI[i].GetComponent<SpriteRenderer>().sprite = itemsToDisplay[i].GetComponent<SpriteRenderer>().sprite;
-                itemToDisplayPanelUI[i].GetComponent<Transform>().localScale = new Vector3(2f, 2f, 0);
+                //itemToDisplayPanelUI[i].GetComponent<Transform>().localScale = new Vector3(2f, 2f, 0);
+                itemToDisplayPanelUI[i].GetComponent<Transform>().localScale = itemsToDisplay[i].GetComponent<Transform>().localScale / 4;
             }
             else
             {
@@ -133,20 +119,25 @@ public class InteractiveAssets : MonoBehaviour
     public IEnumerator RemoveObjectsPeriodically(string name)
     {
         int index = 0;
-        // Keep detecting objects every 'interval' seconds
+
         while (true)
         {
             yield return new WaitForSeconds(5f);
 
             if (index < itemsToDisplay.Length && itemsToDisplay[index] != null && itemsToDisplay[index].name.Contains(name))
             {
-                //Debug.Log("itemsToDisplay[i].name = " + itemsToDisplay[i].name);
                 itemsToDisplay[index] = null;
                 index++;
             }
+            //! Display on the game vue, on the interactiveAsset
             DisplayItems();
-            //if (index < itemsToDisplay.Length) {  }
-            //Debug.Log("RemoveObjectsPeriodically index : " + index);
+
+            //! Update the display on the UI vue if open
+            if (interactiveAssetsUI.gameObject.activeSelf)
+            {
+                interactiveAssetsUI.SetMeActive(GetComponent<SpriteRenderer>().sprite, itemsToDisplay);
+            }
+
         }
     }
 
@@ -171,6 +162,9 @@ public class InteractiveAssets : MonoBehaviour
         {
             if (detectedObject.name.Contains(name)) { quantityInRadius++; }
         }
+
+        //! -1 because counted itself if this.name == parameter name 
+        if (gameObject.name.Contains(name)) { quantityInRadius -= 1; }
 
         return quantityInRadius;
     }
@@ -231,7 +225,7 @@ public class InteractiveAssets : MonoBehaviour
             return;
         }
 
-        if (currentZone == condition.RequiredZone && friendsInRadius >= condition.FriendQuantity && itemsToDisplay.Contains(null))
+        if (currentZone == condition.RequiredZone && friendsInRadius == condition.FriendQuantity && itemsToDisplay.Contains(null))
         {
             //! Find the first null index
             int i = Array.FindIndex(itemsToDisplay, item => item == null);
@@ -243,14 +237,13 @@ public class InteractiveAssets : MonoBehaviour
             {
                 Debug.LogWarning("Could not load the game object at adress " + condition.LoadedObjectAdress);
             }
+            //! Display on the interactiveAsset in th game vue;
             DisplayItems();
+            //! Update the display on the UI vue if open
+            if (interactiveAssetsUI.gameObject.activeSelf) { interactiveAssetsUI.SetMeActive(GetComponent<SpriteRenderer>().sprite, itemsToDisplay); }
             return;
         }
-
-        // Debug.Log("tout en bas : " + this.name);
-
     }
-
 
     public void SetZone(string zoneName)
     {

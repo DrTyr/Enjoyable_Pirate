@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using Unity.UI;
+using System;
 
-public class Star : Species
+public class Shell : Species
 {
-    new string name = "Star";
+    //! Must be the name of the Prefab too
+    new string name = "Shell";
 
     private static bool Awoken = false;
 
     [HideInInspector] public static int unlockedLevel = 0;
 
-    [HideInInspector] public static int maxUnlockedLevel; // 0, 1 and 2 ; Currently set to 1 because only 2 display in JournalUI;
-
+    [HideInInspector] public static int maxUnlockedLevel;
 
     public override void Awake()
     {
@@ -49,17 +50,17 @@ public class Star : Species
     public SpeciesDescriptions SetDescription()
     {
 
-        SpeciesDescriptions star = new SpeciesDescriptions("Star")
+        SpeciesDescriptions shell = new SpeciesDescriptions(this.name)
         {
-            ScientificName = "Starus starus"
+            ScientificName = "Coquillus coquillatus"
         };
-        star.descriptionsText.Add("Test description 0");
-        star.descriptionsText.Add("Test description 1");
-        star.descriptionsText.Add("Test description 2");
+        shell.descriptionsText.Add("Test description shell 0");
+        shell.descriptionsText.Add("Test description shell 1");
+        shell.descriptionsText.Add("Test description shell 2");
 
-        maxUnlockedLevel = star.descriptionsText.Count;
+        maxUnlockedLevel = shell.descriptionsText.Count;
 
-        return star;
+        return shell;
     }
 
 
@@ -68,10 +69,10 @@ public class Star : Species
 
         FriendsCondition condition = new("BeachRock")
         {
-            FriendQuantity = 1,
-            RequiredZone = ZonesNames.LowerBeach.ToString(),
-            LoadedObjectAdress = "Species/" + "Star",
-            ItemRewardName = "Star",
+            FriendQuantity = 0,
+            RequiredZone = ZonesNames.UpperBeach.ToString(),
+            LoadedObjectAdress = "Species/" + this.name,
+            ItemRewardName = this.name,
             DetectionTimer = 10f,
             SupportName = "BeachRock"
         };

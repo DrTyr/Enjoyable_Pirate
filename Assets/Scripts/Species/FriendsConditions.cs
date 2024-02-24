@@ -12,18 +12,20 @@ public class FriendsCondition
 
     public FriendsCondition(string name)
     {
-        //! Conditions to Add a object to itemList
+        //! Name of the object that has to be around the support
         FriendName = name;
+        //! Quantity of this object
         FriendQuantity = 300; // By default, the quantity is too high
+        //! Where the suport need to be to generate
         RequiredZone = "zone";
-        //string requiredZone = "";
         //! Item added if conditions fullfilled
-        //! Folder adress, root is Resources/...
+        //! Prefab adress, root is Resources/...
         //! Exemple : "Items/" + "Carrot"
         LoadedObjectAdress = "";
         DetectionTimer = 600.0f; // By default, the time is too high
         ItemRewardName = "";
         CoRoutineInProgress = false;
+        //! On what support this object can appear
         SupportName = "";
     }
 

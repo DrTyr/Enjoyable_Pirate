@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataBase : MonoBehaviour
+public class DiscoveredSpeciesDataBase : MonoBehaviour
 {
 
-    private static DataBase instance;
+    private static DiscoveredSpeciesDataBase instance;
 
     void Start()
     {
@@ -13,7 +13,7 @@ public class DataBase : MonoBehaviour
         instance = this;
     }
 
-    public static DataBase GetInstance()
+    public static DiscoveredSpeciesDataBase GetInstance()
     {
 
         return instance;

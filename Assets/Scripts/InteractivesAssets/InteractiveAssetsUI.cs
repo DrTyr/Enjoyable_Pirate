@@ -6,7 +6,7 @@ public class InteractiveAssetsUI : MonoBehaviour
 {
     //! the main object than inherit from InteractiveAssets
     private GameObject ObjectToDisplay;
-    //! The object that will appear on it
+    //! The objects that will appear on it
     private GeneralItem[] items;
     //! The location where the objects will appear on ObjectToDisplay
     private List<GameObject> placeHolders;
@@ -66,6 +66,8 @@ public class InteractiveAssetsUI : MonoBehaviour
                 placeHolder.SetActive(true);
                 placeHolder.GetComponent<UnityEngine.UI.Image>().sprite = itemsToDisplay[index].GetComponent<SpriteRenderer>().sprite;
                 placeHolder.GetComponent<Transform>().localScale = new Vector3(1f, 1f, 0);
+                //placeHolder.GetComponent<Transform>().localScale = itemsToDisplay[index].GetComponent<Transform>().localScale;
+
             }
             else
             {
@@ -123,7 +125,7 @@ public class InteractiveAssetsUI : MonoBehaviour
 
     }
 
-    //! Call not investigating a Interactive Object anymore
+    //! Call when not investigating a Interactive Object anymore
     public void SetMeInactive()
     {
         ObjectToDisplay.GetComponent<UnityEngine.UI.Image>().sprite = defaultSprite;
