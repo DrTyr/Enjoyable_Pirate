@@ -5,10 +5,11 @@ using UnityEngine;
 using Unity.UI;
 using System;
 
-public class Shell : Species
+public class SunFlower : Species
 {
     //! Must be the name of the Prefab too
-    new string name = "Shell";
+    new string name = "SunFlower";
+
 
     private static bool Awoken = false;
 
@@ -21,6 +22,7 @@ public class Shell : Species
         if (!Awoken)
         {
             base.Awake();
+
 
             speciesDescription.Add(SetDescription());
             conditionsList.Add(SetConditions());
@@ -47,31 +49,31 @@ public class Shell : Species
     public SpeciesDescriptions SetDescription()
     {
 
-        SpeciesDescriptions shell = new SpeciesDescriptions(this.name)
+        SpeciesDescriptions SunFlower = new SpeciesDescriptions(this.name)
         {
-            ScientificName = "Coquillus coquillatus"
+            ScientificName = "Sun Flower"
         };
-        shell.descriptionsText.Add("Test description shell 0");
-        shell.descriptionsText.Add("Test description shell 1");
-        shell.descriptionsText.Add("Test description shell 2");
+        SunFlower.descriptionsText.Add("Test description SunFlower 0");
+        SunFlower.descriptionsText.Add("Test description SunFlower 1");
+        SunFlower.descriptionsText.Add("Test description SunFlower 2");
 
-        maxUnlockedLevel = shell.descriptionsText.Count;
+        maxUnlockedLevel = SunFlower.descriptionsText.Count;
 
-        return shell;
+        return SunFlower;
     }
 
 
     public FriendsCondition SetConditions()
     {
 
-        FriendsCondition condition = new("BeachRock")
+        FriendsCondition condition = new("Field")
         {
             FriendQuantity = 0,
-            RequiredZone = ZonesNames.UpperBeach.ToString(),
+            RequiredZone = "",
             LoadedObjectAdress = "Species/" + this.name,
             ItemRewardName = this.name,
-            DetectionTimer = 10f,
-            SupportName = "BeachRock"
+            DetectionTimer = 2f,
+            SupportName = "Field"
         };
         return condition;
     }

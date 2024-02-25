@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class FriendsCondition
 {
     public string FriendName;
@@ -10,12 +12,17 @@ public class FriendsCondition
     public bool CoRoutineInProgress;
     public string SupportName;
 
+    public List<string> FriendsList;
+
     public FriendsCondition(string name)
     {
         //! Name of the object that has to be around the support
         FriendName = name;
         //! Quantity of this object
         FriendQuantity = 300; // By default, the quantity is too high
+        //! If différents friends must be around
+        //! Each in at least 1 exemplary
+        FriendsList = new List<string>();
         //! Where the suport need to be to generate
         RequiredZone = "zone";
         //! Item added if conditions fullfilled

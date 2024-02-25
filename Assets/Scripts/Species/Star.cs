@@ -24,7 +24,7 @@ public class Star : Species
             speciesDescription.Add(SetDescription());
             conditionsList.Add(SetConditions());
 
-            SpeciesDatabase.Instance.AddSpecies(this);
+            //SpeciesDatabase.Instance.AddSpecies(this);
 
 
             Awoken = true;

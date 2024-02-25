@@ -19,8 +19,6 @@ public class Carrot : Species
             speciesDescription.Add(SetDescription());
             conditionsList.Add(SetConditions());
 
-            SpeciesDatabase.Instance.AddSpecies(this);
-
             Awoken = true;
         }
 

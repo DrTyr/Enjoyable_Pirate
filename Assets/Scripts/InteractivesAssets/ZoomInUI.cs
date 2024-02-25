@@ -7,15 +7,13 @@ public class InteractiveAssetsUI : MonoBehaviour
     //! the main object than inherit from InteractiveAssets
     private GameObject ObjectToDisplay;
     //! The objects that will appear on it
-    private GeneralItem[] items;
+    private List<GameObject> items;
     //! The location where the objects will appear on ObjectToDisplay
     private List<GameObject> placeHolders;
     //! Each place holder has a button
     private List<Button> buttons;
     public Sprite defaultSprite;
-
     private bool doesButtonDisplayJournal;
-
     private static InteractiveAssetsUI instance;
 
 
@@ -43,7 +41,6 @@ public class InteractiveAssetsUI : MonoBehaviour
         {
             placeHolders.Add(child.gameObject);
             buttons.Add(child.gameObject.GetComponentInChildren<Button>());
-
         }
     }
 
@@ -53,7 +50,7 @@ public class InteractiveAssetsUI : MonoBehaviour
         return instance;
     }
 
-    private void DisplayItems(GeneralItem[] itemsToDisplay)
+    private void DisplayItems(List<GameObject> itemsToDisplay)
     {
         int index = 0;
 
@@ -61,7 +58,7 @@ public class InteractiveAssetsUI : MonoBehaviour
         //! If no item to display, set the placeholder inactif
         foreach (var placeHolder in placeHolders)
         {
-            if (index < itemsToDisplay.Length && itemsToDisplay[index] != null)
+            if (index < itemsToDisplay.Count && itemsToDisplay[index] != null)
             {
                 placeHolder.SetActive(true);
                 placeHolder.GetComponent<UnityEngine.UI.Image>().sprite = itemsToDisplay[index].GetComponent<SpriteRenderer>().sprite;
@@ -80,7 +77,7 @@ public class InteractiveAssetsUI : MonoBehaviour
 
     private void LinkTheButtons()
     {
-        for (int i = 0; i < items.Length; i++)
+        for (int i = 0; i < items.Count; i++)
         {
             //Debug.Log("items.Length : " + items.Length);
             int localIndex = i;
@@ -96,7 +93,7 @@ public class InteractiveAssetsUI : MonoBehaviour
     {
         if (doesButtonDisplayJournal)
         {
-            InfoJournalUI.GetInstance().SetInfoToDisplay(items[index]);
+            InfoJournalUI.GetInstance().SetInfoToDisplay(items[index].GetComponent<GeneralItem>());
             doesButtonDisplayJournal = false;
         }
         else
@@ -115,7 +112,7 @@ public class InteractiveAssetsUI : MonoBehaviour
     }
 
     //! Call when investigating a Interactive Object
-    public void SetMeActive(Sprite sprite, GeneralItem[] itemsToDisplay)
+    public void SetMeActive(Sprite sprite, List<GameObject> itemsToDisplay)
     {
         items = itemsToDisplay;
         gameObject.SetActive(true);

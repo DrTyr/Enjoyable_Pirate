@@ -2,11 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class InteractiveBeachRocks : InteractiveAssets
+public class InteractiveField : InteractiveAssets
 {
-    private string assetName = "BeachRock";
-
-
+    private string assetName = "Field";
     public override void Start()
     {
         //! Call the Start Method in the parent
@@ -15,7 +13,7 @@ public class InteractiveBeachRocks : InteractiveAssets
         ConditionsList = new List<FriendsCondition>();
 
         //! Player can press interact near the object to open a ZomIn Menu to view the species on the item
-        zoomInToStudy = true;
+        zoomInToStudy = false;
 
         GetItemICanGrow();
 
