@@ -15,7 +15,7 @@ public class Rock : GeneralItem
 
         if (player != null && copyIndex == 0)
         {
-            Debug.Log("coucou");
+            //Debug.Log("coucou");
             PassCopyToInventory();
             gameObject.SetActive(false);
         }
@@ -47,7 +47,7 @@ public class Rock : GeneralItem
 
     public override void UseFromInventory([Optional] int quantity)
     {
-        Debug.Log("Instanciate");
+        // Debug.Log("Instanciate");
         //Rocks copy = Clone();
         //GameObject loadedObject = Resources.Load<GameObject>("Items/" + "Rock");
         GameObject loadedObject = Resources.Load<GameObject>("Items/" + "BeachRock");

@@ -306,14 +306,14 @@ public class InteractiveAssets : MonoBehaviour
             return;
         }
 
-        if (condition.ItemRewardName == "Shell")
-        {
-            Debug.Log("List friend for " + condition.ItemRewardName + " : " + allDifferentFriendsAround);
-            Debug.Log("Friend in " + condition.ItemRewardName + " : " + correctAmountOf1FriendAround);
-            Debug.Log("correctZone in " + condition.ItemRewardName + " : " + correctZone);
-            Debug.Log("Spot avaiblabe in " + name + " : " + spotAvailable);
-            Debug.Log("rewardCurrentlyBeenAdded in " + name + " : " + rewardCurrentlyBeenAdded);
-        }
+        // if (condition.ItemRewardName == "Shell")
+        // {
+        //     Debug.Log("List friend for " + condition.ItemRewardName + " : " + allDifferentFriendsAround);
+        //     Debug.Log("Friend in " + condition.ItemRewardName + " : " + correctAmountOf1FriendAround);
+        //     Debug.Log("correctZone in " + condition.ItemRewardName + " : " + correctZone);
+        //     Debug.Log("Spot avaiblabe in " + name + " : " + spotAvailable);
+        //     Debug.Log("rewardCurrentlyBeenAdded in " + name + " : " + rewardCurrentlyBeenAdded);
+        // }
 
 
         //! Stop the cortoutine if not the right amount of friends around anymore
@@ -328,7 +328,7 @@ public class InteractiveAssets : MonoBehaviour
 
 
 
-        Debug.Log("STEP 6");
+        //Debug.Log("STEP 6");
 
 
         if (correctZone && correctAmountOf1FriendAround || allDifferentFriendsAround && spotAvailable)

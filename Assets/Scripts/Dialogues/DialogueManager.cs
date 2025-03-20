@@ -279,7 +279,7 @@ public class DialogueManager : MonoBehaviour
     {
         //! This is part is directly from the tutorial, maybe there is a better way
         //! Unity Event system need to be clear first then select in a different frame
-        //! this code allow to choose a choice
+        //! this code allow to make a choice
         EventSystem.current.SetSelectedGameObject(null);
         yield return new WaitForEndOfFrame();
         EventSystem.current.SetSelectedGameObject(choices[0]);

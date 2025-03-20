@@ -17,10 +17,18 @@ public class GeneralItem : MonoBehaviour
 
         //Debug.Log("Item awake");
 
-        player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
-        inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
-        if (name == "") { Debug.LogWarning("Must set a name for this object : " + this); }
+        player = Object.FindFirstObjectByType<PlayerController>();
+        inventory = Object.FindFirstObjectByType<Inventory>();
 
+        if (player == null)
+        {
+            Debug.LogWarning("PlayerController not found in the scene.");
+        }
+
+        if (inventory == null)
+        {
+            Debug.LogWarning("Inventory not found in the scene.");
+        }
     }
 
     public virtual void OnTriggerEnter2D(Collider2D other)

@@ -37,6 +37,14 @@ public class InteractiveBeachRocks : InteractiveAssets
                 ConditionsList.Add(condition);
             }
         }
+    }
+
+    public void GenerateSpeciesUnderIt(Vector3 pos)
+    {
+        GameObject crab = Resources.Load<GameObject>("Species/" + "Crabs");
+        crab.GetComponent<Crabs>().isMoving = true;
+        crab.GetComponent<Crabs>().endPosition = new Vector2(pos.x + 5f, pos.y);
+        Instantiate(crab, pos, Quaternion.identity);
 
 
     }

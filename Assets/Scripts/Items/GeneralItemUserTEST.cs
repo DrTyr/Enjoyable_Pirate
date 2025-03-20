@@ -19,8 +19,8 @@ public class GeneralItemUser : MonoBehaviour
 
     private void Start()
     {
-        player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
-        inventoryManager = FindObjectOfType(typeof(Inventory)) as Inventory;
+        player = FindFirstObjectByType<PlayerController>();
+        inventoryManager = FindFirstObjectByType<Inventory>();
     }
 
     public void OnTriggerEnter2D(Collider2D other)

@@ -1,0 +1,49 @@
+# Documentation des Scripts
+
+Ce dossier contient les scripts utilisés dans le projet Unity "Enjoyable Pirate". Voici une description détaillée de chaque fichier et dossier contenu dans ce répertoire :
+
+## Fichiers principaux
+
+- **AgentMover.cs** : Ce script gère le mouvement des agents dans le jeu. Il utilise des algorithmes de pathfinding pour naviguer dans l'environnement et inclut des fonctionnalités pour éviter les obstacles.
+- **House.cs** : Ce script gère les fonctionnalités des maisons dans le jeu, telles que l'entrée et la sortie des personnages, ainsi que les interactions possibles avec les objets à l'intérieur.
+- **NewBehaviourScript.cs** : Un script de comportement par défaut généré par Unity, souvent utilisé comme point de départ pour créer de nouveaux scripts.
+
+## Dossiers et leur contenu
+
+### DataBase
+- **DiscoveredSpeciesDataBase.cs** : Ce script gère la base de données des espèces découvertes, permettant de stocker et de récupérer des informations sur les espèces rencontrées par le joueur.
+- **DiscoveredSpeciesDataBaseUI.cs** : Ce script gère l'interface utilisateur pour la base de données des espèces découvertes, permettant au joueur de visualiser et d'interagir avec les données des espèces.
+
+### Dialogues
+- **BillBoard.ink** : Contient les dialogues pour les panneaux d'affichage dans le jeu, écrits en utilisant le langage Ink pour la création de dialogues interactifs.
+
+### GameTime
+- Contient les scripts relatifs à la gestion du temps dans le jeu, incluant des fonctionnalités pour le cycle jour/nuit et la synchronisation des événements en jeu.
+
+### InteractivesAssets
+- Contient les scripts pour les objets interactifs dans le jeu, permettant aux joueurs d'interagir avec divers éléments de l'environnement, tels que les leviers, les portes et les coffres.
+
+### Inventory
+- Contient les scripts pour la gestion de l'inventaire du joueur, incluant des fonctionnalités pour ajouter, supprimer et utiliser des objets.
+
+### Items
+- Contient les scripts relatifs aux objets que le joueur peut collecter, définissant les propriétés et les comportements des différents objets disponibles dans le jeu.
+
+### Player
+- Contient les scripts relatifs aux fonctionnalités du joueur, incluant le contrôle du personnage, les interactions avec l'environnement et la gestion de la santé et des compétences.
+
+### Quests
+- Contient les scripts pour la gestion des quêtes dans le jeu, permettant de créer, suivre et compléter des quêtes, ainsi que de gérer les récompenses associées.
+
+### Species
+- Contient les scripts relatifs aux différentes espèces présentes dans le jeu, définissant leurs comportements, leurs habitats et leurs interactions avec le joueur.
+
+### Terrains
+- Contient les scripts pour la gestion des terrains dans le jeu, incluant la génération procédurale de terrains et la gestion des différents types de surfaces.
+
+## Fichiers .meta
+Les fichiers `.meta` sont générés automatiquement par Unity pour gérer les métadonnées des fichiers et dossiers. Ils contiennent des informations essentielles pour le suivi des assets et leur utilisation correcte dans le projet.
+
+---
+
+Cette documentation est destinée à fournir une vue d'ensemble des scripts et de leur organisation dans le projet. Pour plus de détails, veuillez consulter les commentaires dans chaque script individuel.

@@ -36,7 +36,7 @@ public class AgentMover : MonoBehaviour
         }
 
         currentSpeed = Mathf.Clamp(currentSpeed, 0, maxSpeed);
-        rgb2d.velocity = oldMovementInput * currentSpeed;
+        rgb2d.linearVelocity = oldMovementInput * currentSpeed;
 
     }
 }

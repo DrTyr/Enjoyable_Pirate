@@ -21,12 +21,12 @@ public class Chest : MonoBehaviour
     public int[] quantity;
     private void Start()
     {
-        player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
+        player = FindFirstObjectByType<PlayerController>();
         canvas = GetComponentInChildren<Canvas>().gameObject;
         chestUI = canvas.transform.GetChild(0);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = chestCloseSprite;
-        inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
+        inventory = FindFirstObjectByType<Inventory>();
         //! Defensive test, if quantity is set but content is null, set quantity to 0
         for (int i = 0; i < contents.Length; i++) { if (contents[i] == null) { quantity[i] = 0; } }
         GetSlotsUI();
