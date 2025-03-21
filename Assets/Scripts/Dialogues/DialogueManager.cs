@@ -63,7 +63,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Start()
     {
-        player = FindObjectOfType(typeof(PlayerController)) as PlayerController;
+        player = FindFirstObjectByType<PlayerController>();
 
         //! Desactivate the dialogue Panel and so dialogueIsPlaying to false, no dialogue playing at start
         dialogueIsPlaying = false;
